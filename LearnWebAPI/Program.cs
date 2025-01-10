@@ -39,4 +39,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/Brand/{id:int}", (int id, IBrandService brandService) =>
+{
+    var brand = brandService.GetOne(id);
+    return brand is not null ? Results.Ok(brand) : Results.NotFound();
+});
+
 app.Run();

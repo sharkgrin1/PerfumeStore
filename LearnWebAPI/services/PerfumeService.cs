@@ -15,4 +15,9 @@ public class PerfumeService(PerfumeContext db) : IPerfumeService
     {
         return db.Perfumes.Find(id);
     }
+
+    public List<Perfume> GetByName(string name)
+    {
+        return db.Perfumes.Where(x => x.Name.Contains(name)).ToList();
+    }
 }

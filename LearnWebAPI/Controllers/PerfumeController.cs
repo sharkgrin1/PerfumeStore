@@ -16,8 +16,15 @@ public class PerfumeController(IPerfumeService perfumeService) : ControllerBase
 
     [HttpGet]
     [Route("{id:int}")]
-    public Perfume? GetPerfume(int id)
+    public ActionResult GetPerfume(int id)
     {
-        return perfumeService.GetOne(id);
+        var perfume = perfumeService.GetOne(id);
+        return perfume is not null ? Ok(perfume) : NotFound();
+    }
+
+    [HttpGet("filter")]
+    public List<Perfume> FilterPerfume([FromQuery] string name)
+    {
+        return perfumeService.GetByName(name);
     }
 }

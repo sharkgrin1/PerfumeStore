@@ -10,4 +10,9 @@ public class BrandService(PerfumeContext db) : IBrandService
     {
         return db.Brands.Include(x => x.Perfumes).ToList();
     }
+
+    public Brand? GetOne(int id)
+    {
+        return db.Brands.Find(id);
+    }
 }
