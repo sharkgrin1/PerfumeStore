@@ -16,7 +16,7 @@ public class PerfumeController(IPerfumeService perfumeService) : ControllerBase
 
     [HttpGet]
     [Route("{id:int}")]
-    public ActionResult GetPerfume(int id)
+    public ActionResult GetPerfume([FromRoute] int id)
     {
         var perfume = perfumeService.GetOne(id);
         return perfume is not null ? Ok(perfume) : NotFound();
@@ -26,5 +26,26 @@ public class PerfumeController(IPerfumeService perfumeService) : ControllerBase
     public List<Perfume> FilterPerfume([FromQuery] string name)
     {
         return perfumeService.GetByName(name);
+    }
+
+    [HttpPost]
+    public ActionResult CreatePerfume([FromBody] Perfume perfume)
+    {
+        perfumeService.Create(perfume);
+        return CreatedAtAction(nameof(GetPerfume), new{id = perfume.Id}, perfume);
+    }
+
+    [HttpPut("{id:int}")]
+    public ActionResult UpdatePerfume(int id, [FromBody] Perfume perfume)
+    {
+        perfumeService.Update(id, perfume);
+        return NoContent();
+    }
+
+    [HttpDelete("{id:int}")]
+    public ActionResult DeletePerfume(int id)
+    {
+        var perfume = perfumeService.Delete(id);
+        return Ok(perfume);
     }
 }
