@@ -11,6 +11,11 @@ public class PerfumeService(PerfumeContext db) : IPerfumeService
         return db.Perfumes.Include(x => x.Brand).ToList();
     }
 
+    public List<Perfume> GetAll(Pagination pagination)
+    {
+        return db.Perfumes.Skip(pagination.Size * (pagination.Page - 1)).Take(pagination.Size).ToList();
+    }
+
     public Perfume? GetOne(int id)
     {
         return db.Perfumes.Find(id);

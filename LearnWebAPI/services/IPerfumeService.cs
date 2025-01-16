@@ -5,6 +5,8 @@ namespace LearnWebAPI.services;
 public interface IPerfumeService
 {
     List<Perfume> GetAll();
+    
+    List<Perfume> GetAll(Pagination pagination);
 
     Perfume? GetOne(int id);
 

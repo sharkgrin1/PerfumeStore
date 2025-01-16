@@ -9,9 +9,9 @@ namespace LearnWebAPI.Controllers;
 public class PerfumeController(IPerfumeService perfumeService) : ControllerBase
 {
     [HttpGet]
-    public List<Perfume> GetAllPerfume()
+    public List<Perfume> GetAllPerfume([FromQuery] Pagination? pagination)
     {
-        return perfumeService.GetAll();
+        return pagination is null ? perfumeService.GetAll() : perfumeService.GetAll(pagination);
     }
 
     [HttpGet]
@@ -32,7 +32,7 @@ public class PerfumeController(IPerfumeService perfumeService) : ControllerBase
     public ActionResult CreatePerfume([FromBody] Perfume perfume)
     {
         perfumeService.Create(perfume);
-        return CreatedAtAction(nameof(GetPerfume), new{id = perfume.Id}, perfume);
+        return CreatedAtAction(nameof(GetPerfume), new { id = perfume.Id }, perfume);
     }
 
     [HttpPut("{id:int}")]
