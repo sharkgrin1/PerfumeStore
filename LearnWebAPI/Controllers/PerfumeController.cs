@@ -48,4 +48,11 @@ public class PerfumeController(IPerfumeService perfumeService) : ControllerBase
         var perfume = perfumeService.Delete(id);
         return Ok(perfume);
     }
+
+    [HttpDelete("multiple")]
+    public ActionResult DeleteMultiplePerfumes([FromQuery] int[] ids)
+    {
+        perfumeService.Delete(ids);
+        return Ok();
+    }
 }

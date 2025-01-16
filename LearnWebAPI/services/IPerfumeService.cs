@@ -15,4 +15,6 @@ public interface IPerfumeService
     void Update(int id, Perfume perfume);
 
     Perfume Delete(int id);
+
+    void Delete(int[] ids);
 }

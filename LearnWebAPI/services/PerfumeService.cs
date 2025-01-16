@@ -42,4 +42,11 @@ public class PerfumeService(PerfumeContext db) : IPerfumeService
         db.SaveChanges();
         return perfume;
     }
+
+    public void Delete(int[] ids)
+    {
+        var perfumes = db.Perfumes.Where(x => ids.Contains(x.Id));
+        db.Perfumes.RemoveRange(perfumes);
+        db.SaveChanges();
+    }
 }
