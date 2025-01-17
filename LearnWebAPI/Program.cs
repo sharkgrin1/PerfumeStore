@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using LearnWebAPI.Models;
 using LearnWebAPI.Repositories;
 using LearnWebAPI.services;
 using Microsoft.EntityFrameworkCore;
@@ -39,10 +41,21 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/Brand/{id:int}", (int id, IBrandService brandService) =>
+app.MapGet("/brand/{id:int}", (int id, IBrandService brandService) =>
 {
     var brand = brandService.GetOne(id);
     return brand is not null ? Results.Ok(brand) : Results.NotFound();
 });
+
+app.MapGet("/brand",
+    ([AsParameters] MinPagination pagination, IBrandService brandService) =>
+    {
+        var validationResults = new List<ValidationResult>();
+        var validationContext = new ValidationContext(pagination);
+        return !Validator.TryValidateObject(pagination, validationContext, validationResults, true)
+            ? Results.BadRequest(validationResults)
+            : Results.Ok(brandService.GetAll(pagination));
+    }
+);
 
 app.Run();
