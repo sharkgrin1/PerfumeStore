@@ -9,9 +9,12 @@ namespace LearnWebAPI.Controllers;
 public class PerfumeController(IPerfumeService perfumeService) : ControllerBase
 {
     [HttpGet]
-    public List<Perfume> GetAllPerfume([FromQuery] FilterParams filterParams)
+    public List<Perfume> GetAllPerfume(
+        [FromQuery] FilterParams filter,
+        [FromQuery] Sorting sort,
+        [FromQuery] Pagination pagination)
     {
-        return perfumeService.Filter(filterParams);
+        return perfumeService.Filter(filter, sort, pagination);
     }
 
     [HttpGet]

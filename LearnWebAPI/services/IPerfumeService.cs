@@ -6,7 +6,7 @@ public interface IPerfumeService
 {
     List<Perfume> GetAll();
     
-    List<Perfume> Filter(FilterParams filterParams);
+    List<Perfume> Filter(FilterParams filter, Sorting sort, Pagination pagination);
 
     Perfume? GetOne(int id);
 

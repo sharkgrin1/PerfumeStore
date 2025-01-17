@@ -11,42 +11,42 @@ public class PerfumeService(PerfumeContext db) : IPerfumeService
         return db.Perfumes.Include(x => x.Brand).ToList();
     }
 
-    public List<Perfume> Filter(FilterParams filterParams)
+    public List<Perfume> Filter(FilterParams filter, Sorting sort, Pagination pagination)
     {
         IQueryable<Perfume> query = db.Perfumes;
 
-        var name = filterParams.Name;
+        var name = filter.Name;
         if (name != null)
         {
             query = query.Where(x => x.Name.ToLower().Contains(name.ToLower()));
         }
 
-        if (filterParams.MinPrice.HasValue)
+        if (filter.MinPrice.HasValue)
         {
-            query = query.Where(x => x.Price >= filterParams.MinPrice.Value);
+            query = query.Where(x => x.Price >= filter.MinPrice.Value);
         }
 
-        if (filterParams.MaxPrice.HasValue)
+        if (filter.MaxPrice.HasValue)
         {
-            query = query.Where(x => x.Price <= filterParams.MaxPrice.Value);
+            query = query.Where(x => x.Price <= filter.MaxPrice.Value);
         }
 
-        if (filterParams.IsInStock.HasValue)
+        if (filter.IsInStock.HasValue)
         {
-            var inStock = filterParams.IsInStock.Value;
+            var inStock = filter.IsInStock.Value;
             query = inStock ? query.Where(x => x.Quantity > 0) : query.Where(x => x.Quantity == 0);
         }
 
-        var sortBy = filterParams.SortBy;
+        var sortBy = sort.SortBy;
         if (sortBy != null)
         {
-            query = filterParams.SortOrder == SortOrder.ASC
+            query = sort.SortOrder == SortOrder.ASC
                 ? query.OrderBy(x => EF.Property<object>(x, sortBy))
                 : query.OrderByDescending(x => EF.Property<object>(x, sortBy));
         }
 
-        var size = filterParams.Size;
-        return query.Skip(size * (filterParams.Page - 1)).Take(size).ToList();
+        var size = pagination.Size;
+        return query.Skip(size * (pagination.Page - 1)).Take(size).ToList();
     }
 
     public Perfume? GetOne(int id)
