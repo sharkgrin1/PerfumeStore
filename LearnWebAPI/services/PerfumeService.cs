@@ -37,6 +37,14 @@ public class PerfumeService(PerfumeContext db) : IPerfumeService
             query = inStock ? query.Where(x => x.Quantity > 0) : query.Where(x => x.Quantity == 0);
         }
 
+        var sortBy = filterParams.SortBy;
+        if (sortBy != null)
+        {
+            query = filterParams.SortOrder == SortOrder.ASC
+                ? query.OrderBy(x => EF.Property<object>(x, sortBy))
+                : query.OrderByDescending(x => EF.Property<object>(x, sortBy));
+        }
+
         var size = filterParams.Size;
         return query.Skip(size * (filterParams.Page - 1)).Take(size).ToList();
     }
