@@ -37,16 +37,27 @@ public class PerfumeService(PerfumeContext db) : IPerfumeService
             query = inStock ? query.Where(x => x.Quantity > 0) : query.Where(x => x.Quantity == 0);
         }
 
-        var sortBy = sort.SortBy;
-        if (sortBy != null)
+        query = SortQuery(sort, query);
+
+        return PaginationQuery(pagination, query).ToList();
+    }
+
+    public List<Perfume> Search(string? search, Sorting sort, Pagination pagination)
+    {
+        IQueryable<Perfume> query = db.Perfumes;
+        if (search != null)
         {
-            query = sort.SortOrder == SortOrder.ASC
-                ? query.OrderBy(x => EF.Property<object>(x, sortBy))
-                : query.OrderByDescending(x => EF.Property<object>(x, sortBy));
+            search = search.ToLower();
+            query = query.Where(x=>x.Name.ToLower().Contains(search) ||
+                                   x.Quantity.ToString().Equals(search) ||
+                                   x.Id.ToString().Equals(search) ||
+                                   x.Price.ToString().Equals(search) || 
+                                   x.PerfumeType.ToString().ToLower().Contains(search));
         }
 
-        var size = pagination.Size;
-        return query.Skip(size * (pagination.Page - 1)).Take(size).ToList();
+        query = SortQuery(sort, query);
+
+        return PaginationQuery(pagination, query).ToList();
     }
 
     public Perfume? GetOne(int id)
@@ -81,5 +92,24 @@ public class PerfumeService(PerfumeContext db) : IPerfumeService
         var perfumes = db.Perfumes.Where(x => ids.Contains(x.Id));
         db.Perfumes.RemoveRange(perfumes);
         db.SaveChanges();
+    }
+
+    private static IQueryable<Perfume> PaginationQuery(Pagination pagination, IQueryable<Perfume> query)
+    {
+        var size = pagination.Size;
+        return query.Skip(size * (pagination.Page - 1)).Take(size);
+    }
+
+    private static IQueryable<Perfume> SortQuery(Sorting sort, IQueryable<Perfume> query)
+    {
+        var sortBy = sort.SortBy;
+        if (sortBy != null)
+        {
+            query = sort.SortOrder == SortOrder.ASC
+                ? query.OrderBy(x => EF.Property<object>(x, sortBy))
+                : query.OrderByDescending(x => EF.Property<object>(x, sortBy));
+        }
+
+        return query;
     }
 }
