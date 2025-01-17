@@ -9,9 +9,9 @@ namespace LearnWebAPI.Controllers;
 public class PerfumeController(IPerfumeService perfumeService) : ControllerBase
 {
     [HttpGet]
-    public List<Perfume> GetAllPerfume([FromQuery] Pagination? pagination)
+    public List<Perfume> GetAllPerfume([FromQuery] FilterParams filterParams)
     {
-        return pagination is null ? perfumeService.GetAll() : perfumeService.GetAll(pagination);
+        return perfumeService.Filter(filterParams);
     }
 
     [HttpGet]
@@ -20,12 +20,6 @@ public class PerfumeController(IPerfumeService perfumeService) : ControllerBase
     {
         var perfume = perfumeService.GetOne(id);
         return perfume is not null ? Ok(perfume) : NotFound();
-    }
-
-    [HttpGet("filter")]
-    public List<Perfume> FilterPerfume([FromQuery] string name)
-    {
-        return perfumeService.GetByName(name);
     }
 
     [HttpPost]

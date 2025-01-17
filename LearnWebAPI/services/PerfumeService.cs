@@ -11,19 +11,39 @@ public class PerfumeService(PerfumeContext db) : IPerfumeService
         return db.Perfumes.Include(x => x.Brand).ToList();
     }
 
-    public List<Perfume> GetAll(Pagination pagination)
+    public List<Perfume> Filter(FilterParams filterParams)
     {
-        return db.Perfumes.Skip(pagination.Size * (pagination.Page - 1)).Take(pagination.Size).ToList();
+        IQueryable<Perfume> query = db.Perfumes;
+
+        var name = filterParams.Name;
+        if (name != null)
+        {
+            query = query.Where(x => x.Name.ToLower().Contains(name.ToLower()));
+        }
+
+        if (filterParams.MinPrice.HasValue)
+        {
+            query = query.Where(x => x.Price >= filterParams.MinPrice.Value);
+        }
+
+        if (filterParams.MaxPrice.HasValue)
+        {
+            query = query.Where(x => x.Price <= filterParams.MaxPrice.Value);
+        }
+
+        if (filterParams.IsInStock.HasValue)
+        {
+            var inStock = filterParams.IsInStock.Value;
+            query = inStock ? query.Where(x => x.Quantity > 0) : query.Where(x => x.Quantity == 0);
+        }
+
+        var size = filterParams.Size;
+        return query.Skip(size * (filterParams.Page - 1)).Take(size).ToList();
     }
 
     public Perfume? GetOne(int id)
     {
         return db.Perfumes.Find(id);
-    }
-
-    public List<Perfume> GetByName(string name)
-    {
-        return db.Perfumes.Where(x => x.Name.Contains(name)).ToList();
     }
 
     public void Create(Perfume perfume)

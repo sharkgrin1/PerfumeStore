@@ -9,6 +9,7 @@ public class Perfume
     public required int Quantity { get; set; }
     public required PerfumeType PerfumeType { get; set; }
     public required int BrandId { get; set; }
+    public required decimal Price { get; set; }
     
     [JsonIgnore]
     public virtual Brand? Brand { get; set; }
