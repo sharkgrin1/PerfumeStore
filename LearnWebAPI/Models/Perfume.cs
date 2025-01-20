@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace LearnWebAPI.Models;
@@ -12,5 +13,6 @@ public class Perfume
     public required decimal Price { get; set; }
     
     [JsonIgnore]
+    [IgnoreDataMember]
     public virtual Brand? Brand { get; set; }
 }

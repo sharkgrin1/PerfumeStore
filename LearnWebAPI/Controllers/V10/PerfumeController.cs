@@ -1,9 +1,12 @@
+using Asp.Versioning;
 using LearnWebAPI.Models;
 using LearnWebAPI.services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LearnWebAPI.Controllers;
+namespace LearnWebAPI.Controllers.V10;
 
+[ApiVersion("1.0")]
+// [Route("v{version:apiVersion}/[controller]")]
 [Route("[controller]")]
 [ApiController]
 public class PerfumeController(IPerfumeService perfumeService) : ControllerBase
@@ -19,7 +22,7 @@ public class PerfumeController(IPerfumeService perfumeService) : ControllerBase
 
     [HttpGet("search")]
     public List<Perfume> SearchPerfume(
-        [FromQuery] string? search, 
+        [FromQuery] string? search,
         [FromQuery] Sorting sort,
         [FromQuery] Pagination pagination)
     {
