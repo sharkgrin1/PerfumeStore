@@ -2,10 +2,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Xml.Serialization;
 using Asp.Versioning;
+using LearnWebAPI.Config;
 using LearnWebAPI.Models;
 using LearnWebAPI.Repositories;
 using LearnWebAPI.services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,8 @@ builder.Services.AddControllers().AddXmlDataContractSerializerFormatters();
 builder.Services.AddOpenApi();
 
 builder.Services.AddSwaggerGen();
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+builder.Services.AddSwaggerGen(options => options.OperationFilter<SwaggerDefaultValues>());
 
 builder.Services.AddDbContext<PerfumeContext>(x => { x.UseInMemoryDatabase("Perfumes"); });
 
@@ -51,7 +56,15 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        var descriptions = app.DescribeApiVersions();
+        foreach (var description in descriptions)
+        {
+            options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                description.GroupName.ToUpperInvariant());
+        }
+    });
 }
 
 app.UseHttpsRedirection();
