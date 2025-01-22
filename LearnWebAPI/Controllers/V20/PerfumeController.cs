@@ -3,7 +3,6 @@ using Asp.Versioning;
 using LearnWebAPI.Models;
 using LearnWebAPI.services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace LearnWebAPI.Controllers.V20;
 

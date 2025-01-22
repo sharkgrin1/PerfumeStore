@@ -43,9 +43,14 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
-builder.Services.AddHsts(options =>
+builder.Services.AddHsts(options => { options.MaxAge = TimeSpan.FromDays(365); });
+
+builder.Services.AddCors(options =>
 {
-    options.MaxAge = TimeSpan.FromDays(365);
+    options.AddPolicy("PerfumeWeb",policyBuilder =>
+        policyBuilder.WithOrigins("https://localhost:7296", "http://localhost:5273")
+            .WithHeaders("X-API-VERSION")
+    );
 });
 
 var app = builder.Build();
@@ -73,9 +78,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHsts();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors("PerfumeWeb");
 
 app.MapControllers();
 

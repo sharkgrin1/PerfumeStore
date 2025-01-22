@@ -1,0 +1,28 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<ul id="product-list"></ul>
+
+@section Scripts
+{
+    <script>
+        const url = "https://localhost:7264/perfume";
+        let productList = document.getElementById("product-list");
+
+        fetch(url).then(response => {
+            return response.json();
+        }).then(perfumes => {
+            perfumes.forEach(perfume => {
+                let li = document.createElement("li");
+                let text = `${perfume.name} - ${perfume.quantity}`;
+                li.appendChild(document.createTextNode(text));
+                productList.appendChild(li);
+            });
+        }).catch(error => {
+            alert(error);
+        })
+    </script>
+}
