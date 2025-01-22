@@ -43,6 +43,11 @@ builder.Services.AddApiVersioning(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
+builder.Services.AddHsts(options =>
+{
+    options.MaxAge = TimeSpan.FromDays(365);
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -67,6 +72,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseHsts();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
