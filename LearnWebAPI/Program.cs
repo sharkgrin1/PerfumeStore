@@ -48,7 +48,7 @@ builder.Services.AddHsts(options => { options.MaxAge = TimeSpan.FromDays(365); }
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("PerfumeWeb",policyBuilder =>
-        policyBuilder.WithOrigins("https://localhost:7296", "http://localhost:5273")
+        policyBuilder.WithOrigins("https://localhost:7095", "http://localhost:5125")
             .WithHeaders("X-API-VERSION")
     );
 });
